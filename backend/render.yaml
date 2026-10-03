@@ -1,0 +1,41 @@
+services:
+  # ── FastAPI Backend ──────────────────────────────────────────────────────────
+  - type: web
+    name: cybersathi-api
+    runtime: python
+    region: singapore  # closest to India
+    plan: free
+    rootDir: backend
+    buildCommand: |
+      pip install -r requirements.txt
+    startCommand: |
+      uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      # These are set in Render dashboard, not hardcoded here
+      - key: DATABASE_URL
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: "7"
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false  # Set to: https://cybersathi-api.onrender.com/auth/google/callback
+      - key: FRONTEND_URL
+        sync: false  # Set to: https://your-app.vercel.app
+      - key: DEBUG
+        value: "false"
+      - key: DB_POOL_SIZE
+        value: "3"   # Free tier Supabase supports ~5 direct connections
+      - key: DB_MAX_OVERFLOW
+        value: "7"

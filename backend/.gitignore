@@ -1,0 +1,88 @@
+# ==============================
+# Environment & Secrets
+# ==============================
+.env
+.env.*
+!.env.example
+
+# ==============================
+# Python
+# ==============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# ==============================
+# Virtual Environment
+# ==============================
+.venv/
+venv/
+env/
+
+# ==============================
+# Testing / Coverage
+# ==============================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# ==============================
+# Type Checking / Linters
+# ==============================
+.mypy_cache/
+.ruff_cache/
+.pyre/
+
+# ==============================
+# IDE / Editor
+# ==============================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==============================
+# OS Files
+# ==============================
+.DS_Store
+Thumbs.db
+
+# ==============================
+# Application Generated Files
+# ==============================
+uploads/*
+reports/*
+logs/*
+tmp/*
+temp/*
+
+# Keep placeholder files if needed
+!uploads/.gitkeep
+!reports/.gitkeep
+!logs/.gitkeep
+
+# ==============================
+# Local Database Files
+# ==============================
+*.db
+*.sqlite
+*.sqlite3
+
+# ==============================
+# Build / Distribution
+# ==============================
+build/
+dist/
+*.egg-info/
+
+# ==============================
+# Secrets / Certificates
+# ==============================
+*.pem
+*.key
+*.crt

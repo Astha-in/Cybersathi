@@ -1,0 +1,509 @@
+/* ─── Design Tokens ─────────────────────────────────────────────────────── */
+:root {
+  --accent:        #00e5ff;
+  --accent-dim:    #00b3cc;
+  --accent-bg:     rgba(0, 229, 255, 0.08);
+  --accent-border: rgba(0, 229, 255, 0.35);
+
+  --surface:       #0d0d0f;
+  --surface-2:     #131316;
+  --surface-3:     #1a1a1f;
+  --border:        rgba(255, 255, 255, 0.07);
+
+  --text:          #e8eaed;
+  --text-muted:    #7a7d85;
+  --text-h:        #ffffff;
+
+  --shadow:        0 0 0 1px var(--accent-border), 0 4px 24px rgba(0,229,255,0.12);
+  --radius:        12px;
+  --radius-sm:     8px;
+}
+
+/* ─── Login Page – two-panel layout ────────────────────────────────────── */
+.login-page {
+  display: flex;
+  min-height: 100vh;
+  background: var(--surface);
+}
+
+/* Left visual panel */
+.login-visual {
+  flex: 1 1 55%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  padding: 3rem;
+  background:
+    radial-gradient(ellipse 80% 60% at 30% 40%, rgba(0, 229, 255, 0.12) 0%, transparent 70%),
+    linear-gradient(160deg, #0a0e1a 0%, #050508 100%);
+}
+
+.visual-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.visual-content {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+}
+
+.brand-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent) 0%, #0077ff 100%);
+  color: #000;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.25rem;
+}
+
+.visual-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin: 0 0 1.5rem;
+}
+
+.visual-content h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text-h);
+  margin: 0 0 1.25rem;
+}
+
+.visual-content h1 span {
+  background: linear-gradient(90deg, var(--accent), #0099ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.visual-description {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin: 0 0 2.5rem;
+  max-width: 380px;
+}
+
+.security-points {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.security-points > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.security-points span {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+}
+
+.security-points p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.visual-footer {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.visual-footer span {
+  font-size: 0.5rem;
+  color: #22c55e;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* Right login panel */
+.login-panel {
+  flex: 0 0 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border-left: 1px solid var(--border);
+  padding: 2.5rem 2rem;
+}
+
+.login-panel-inner {
+  width: 100%;
+  max-width: 340px;
+}
+
+.mobile-brand {
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.mobile-brand .brand-symbol {
+  width: 36px;
+  height: 36px;
+  font-size: 0.75rem;
+  margin-bottom: 0;
+  border-radius: 10px;
+}
+
+.mobile-brand strong {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.login-heading {
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin: 0 0 0.6rem;
+}
+
+.login-heading h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-h);
+  margin: 0 0 0.5rem;
+}
+
+.login-heading p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ─── Login Form ─────────────────────────────────────────────────────────── */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.input-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-h);
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.input-group input::placeholder {
+  color: var(--text-muted);
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
+}
+
+.password-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.password-label-row span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.login-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-sm);
+}
+
+.login-error span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ef4444;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.login-error p {
+  font-size: 0.82rem;
+  color: #fca5a5;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.login-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.8rem 1.25rem;
+  background: linear-gradient(135deg, var(--accent) 0%, #0099ff 100%);
+  color: #000;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 2px 16px rgba(0, 229, 255, 0.25);
+}
+
+.login-submit:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(0, 229, 255, 0.35);
+}
+
+.login-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.button-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.login-security {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-top: 0.25rem;
+}
+
+.security-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+.login-security strong {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.login-security p {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin: 0.1rem 0 0;
+  line-height: 1.4;
+}
+
+/* ─── Google Login Button & Divider ──────────────────────────────────────── */
+.google-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  background: var(--surface-3);
+  color: var(--text-h);
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  cursor: pointer;
+}
+
+.google-login-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.google-login-btn:active {
+  transform: translateY(0);
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.25rem 0;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.login-divider span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.login-footer {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 1.75rem;
+  margin-bottom: 0;
+}
+
+/* ─── Inner Pages (Dashboard, Analyze, History, Settings) ───────────────── */
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+  background: var(--surface);
+}
+
+.page-container .eyebrow {
+  margin-bottom: 0;
+}
+
+.page-container h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  color: var(--text-h);
+  margin: 0;
+  background: linear-gradient(90deg, var(--text-h), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-container > p {
+  font-size: 1rem;
+  color: var(--text-muted);
+  max-width: 440px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .login-page {
+    flex-direction: column;
+  }
+
+  .login-visual {
+    flex: 0 0 auto;
+    padding: 2.5rem 1.5rem 2rem;
+    min-height: 280px;
+    justify-content: flex-start;
+  }
+
+  .security-points {
+    display: none;
+  }
+
+  .visual-description {
+    display: none;
+  }
+
+  .login-panel {
+    flex: 1 1 auto;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    padding: 2rem 1.5rem 3rem;
+  }
+
+  .mobile-brand {
+    display: flex;
+  }
+}
