@@ -4,11 +4,6 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "installCommand": "npm install",
-  "env": {
-    "VITE_API_URL": {
-      "description": "The production FastAPI backend URL (e.g. https://cybersathi-api.onrender.com)"
-    }
-  },
   "rewrites": [
     {
       "source": "/(.*)",
