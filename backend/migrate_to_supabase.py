@@ -228,7 +228,7 @@ def migrate(engine, data: dict):
                     INSERT INTO knowledge_chunks (id, document_id, chunk_index,
                                                    content, embedding, created_at)
                     VALUES (:id, :document_id, :chunk_index,
-                            :content, :embedding::vector, :created_at)
+        :content, CAST(:embedding AS vector), :created_at)
                     ON CONFLICT (id) DO UPDATE SET
                         document_id = EXCLUDED.document_id,
                         chunk_index = EXCLUDED.chunk_index,

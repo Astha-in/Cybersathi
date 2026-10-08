@@ -3,7 +3,7 @@ from typing import Optional
 from urllib.parse import quote, urlencode
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request, status
 from fastapi.responses import RedirectResponse
 from jose import JWTError, jwt
 from sqlalchemy import select
@@ -21,6 +21,7 @@ from app.core.security import (
 from app.models.user import User
 from app.schemas.auth import (
     LoginRequest,
+    RefreshRequest,
     RegisterRequest,
     UserResponse,
 )
@@ -114,11 +115,24 @@ def login(
 
 @router.post("/refresh")
 def refresh_access_token(
-    refresh_token: str,
+    payload_body: Optional[RefreshRequest] = Body(None),
+    refresh_token: Optional[str] = Query(None),
 ):
+    token = (
+        payload_body.refresh_token
+        if payload_body and payload_body.refresh_token
+        else refresh_token
+    )
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Refresh token is required.",
+        )
+
     try:
         payload = jwt.decode(
-            refresh_token,
+            token,
             settings.JWT_SECRET_KEY,
             algorithms=[settings.JWT_ALGORITHM],
         )
@@ -186,7 +200,6 @@ def google_login():
     }
 
     url = f"{GOOGLE_AUTH_URL}?{urlencode(params)}"
-    print(f"\n[GOOGLE OAUTH] Initiating Auth URL: {url}\n")
     return RedirectResponse(url=url)
 
 
@@ -200,8 +213,6 @@ async def google_callback(
     db: Session = Depends(get_db),
 ):
     """Handles callback from Google OAuth and exchanges code for user profile."""
-    print(f"\n[GOOGLE OAUTH] Received Callback Query Params: {dict(request.query_params)}\n")
-
     if error:
         detail = error_description or error
         error_msg = quote(f"Google login failed: {detail}")
@@ -210,10 +221,8 @@ async def google_callback(
         )
 
     if not code:
-        # Check if Google provided any detail in query params
-        params_str = ", ".join(f"{k}={v}" for k, v in request.query_params.items())
         error_msg = quote(
-            f"Authorization code was not provided by Google. Received params: [{params_str}]. "
+            "Authorization code was not provided by Google. "
             "Please ensure your email is added under 'Test users' in Google Cloud Console."
         )
         return RedirectResponse(
@@ -256,15 +265,13 @@ async def google_callback(
                 GOOGLE_TOKEN_URL,
                 data=token_payload,
             )
-        except Exception as exc:
-            print(f"\n[GOOGLE OAUTH] ERROR Token exchange connection error: {exc}\n")
+        except Exception:
             error_msg = quote("Failed to connect to Google token exchange endpoint.")
             return RedirectResponse(
                 url=f"{settings.FRONTEND_URL}/login?error={error_msg}"
             )
 
         if token_response.status_code != 200:
-            print(f"\n[GOOGLE OAUTH] ERROR Token exchange failed [{token_response.status_code}]: {token_response.text}\n")
             error_msg = quote("Google rejected token authorization code exchange.")
             return RedirectResponse(
                 url=f"{settings.FRONTEND_URL}/login?error={error_msg}"
@@ -285,22 +292,19 @@ async def google_callback(
                 GOOGLE_USERINFO_URL,
                 headers={"Authorization": f"Bearer {google_access_token}"},
             )
-        except Exception as exc:
-            print(f"\n[GOOGLE OAUTH] ERROR UserInfo fetch error: {exc}\n")
+        except Exception:
             error_msg = quote("Failed to retrieve profile from Google.")
             return RedirectResponse(
                 url=f"{settings.FRONTEND_URL}/login?error={error_msg}"
             )
 
         if userinfo_response.status_code != 200:
-            print(f"\n[GOOGLE OAUTH] ERROR UserInfo failed [{userinfo_response.status_code}]: {userinfo_response.text}\n")
             error_msg = quote("Google userinfo verification failed.")
             return RedirectResponse(
                 url=f"{settings.FRONTEND_URL}/login?error={error_msg}"
             )
 
         profile = userinfo_response.json()
-        print(f"\n[GOOGLE OAUTH] OK Profile received: sub={profile.get('sub')}, email={profile.get('email')}, verified={profile.get('email_verified')}\n")
 
     google_id = profile.get("sub")
     email = profile.get("email")
@@ -309,7 +313,6 @@ async def google_callback(
     picture = profile.get("picture")
 
     if not google_id or not email or not email_verified:
-        print(f"\n[GOOGLE OAUTH] ERROR Profile incomplete: google_id={google_id}, email={email}, verified={email_verified}\n")
         error_msg = quote(
             "Google account email is unverified or incomplete."
         )
@@ -318,13 +321,11 @@ async def google_callback(
         )
 
     # Find existing user by google_id or verified email
-    print(f"\n[GOOGLE OAUTH] LOOKUP user: google_id={google_id}, email={email}\n")
     try:
         user = db.scalar(
             select(User).where(User.google_id == google_id)
         )
-    except Exception as exc:
-        print(f"\n[GOOGLE OAUTH] ERROR DB lookup error: {exc}\n")
+    except Exception:
         error_msg = quote("Database error during Google login. Ensure migrations are applied (alembic upgrade head).")
         return RedirectResponse(
             url=f"{settings.FRONTEND_URL}/login?error={error_msg}"

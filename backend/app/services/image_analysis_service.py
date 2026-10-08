@@ -5,11 +5,24 @@ import httpx
 from app.core.config import settings
 
 
+def _validate_image_magic_bytes(image_bytes: bytes, mime_type: str) -> bool:
+    """Validate true image file signatures (magic bytes) to prevent MIME spoofing."""
+    if len(image_bytes) < 12:
+        return False
+
+    if mime_type == "image/png":
+        return image_bytes.startswith(b"\x89PNG\r\n\x1a\n")
+    elif mime_type == "image/jpeg":
+        return image_bytes.startswith(b"\xff\xd8\xff")
+    elif mime_type == "image/webp":
+        return image_bytes.startswith(b"RIFF") and image_bytes[8:12] == b"WEBP"
+    return False
+
+
 class ImageAnalysisService:
     """Analyze cybersecurity screenshots using OpenRouter vision models."""
 
     API_URL = "https://openrouter.ai/api/v1/chat/completions"
-
     MODEL = "openrouter/free"
 
     def __init__(self):
@@ -43,6 +56,12 @@ class ImageAnalysisService:
             raise ValueError(
                 "Unsupported image type. "
                 "Use PNG, JPEG, or WEBP."
+            )
+
+        # Enforce true file signature check
+        if not _validate_image_magic_bytes(image_bytes, mime_type):
+            raise ValueError(
+                f"File content does not match declared {mime_type} image format."
             )
 
         image_base64 = base64.b64encode(
